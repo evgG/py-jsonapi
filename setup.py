@@ -46,7 +46,7 @@ setup(
     long_description = long_description,
     author = "Benedikt Schmitt",
     author_email = "benedikt@benediktschmitt.de",
-    url = "https://github.com/benediktschmitt/py-jsonapi",
+    url = "https://github.com/evgG/py-jsonapi",
     download_url = "https://github.com/benediktschmitt/py-jsonapi/archive/master.zip",
     packages = [
         "jsonapi",
@@ -58,6 +58,7 @@ setup(
         "jsonapi.marker",
         "jsonapi.mongoengine",
         "jsonapi.motorengine",
+        "jsonapi.py2neo",
         "jsonapi.sqlalchemy",
         "jsonapi.tornado"
     ],
