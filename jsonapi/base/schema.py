@@ -222,8 +222,8 @@ class Constructor(object):
 
 class InitConstructor(Constructor):
     """
-    This constructor simply uses the ``__init__`` method of the *resource_class*
-    class to create a new resource.
+    This constructor simply uses the ``__init__`` method of
+    the *resource_class* class to create a new resource.
 
     :arg resource_class:
     """
@@ -233,7 +233,13 @@ class InitConstructor(Constructor):
         return None
 
     def create(self, **kargs):
-        return self.resource_class(**kargs)
+        try:
+            return self.resource_class(**kargs)
+        except TypeError:
+            tmp = self.resource_class()
+            for field, value in kargs.items():
+                tmp.__setattr__(field, value)
+            return tmp
 
 
 class Schema(object):
@@ -315,7 +321,7 @@ class Schema(object):
 
             # Constructor
             if isinstance(prop, Constructor):
-                if not self.constructor is None:
+                if self.constructor is not None:
                     LOG.warning(
                         "Found two constructors on %s.", self.typename
                     )

@@ -151,8 +151,8 @@ class API(object):
         """
         True, if the API is in debug mode.
 
-        This value **can be overridden** in subclasses to mimic the behaviour of
-        the parent web framework.
+        This value **can be overridden** in subclasses to mimic the behaviour
+        of the parent web framework.
         """
         return self._debug
 
@@ -182,7 +182,6 @@ class API(object):
             (uris["relationships"], handler.RelationshipHandler)
         ])
         return None
-
 
     def get_resource_class(self, typename, default=ARG_DEFAULT):
         """
@@ -260,9 +259,10 @@ class API(object):
             If the resource type of *o* is not known to the API and no default
             argument is given.
         """
-        typename = self._typenames.get(o) \
-            or self._typenames.get(type(o)) \
-            or default
+        try:
+            typename = self._typenames.get(o) or default
+        except TypeError:
+            typename = self._typenames.get(type(o)) or default
 
         if typename is ARG_DEFAULT:
             raise KeyError("The type of *o* is not known to the API.")
@@ -284,7 +284,6 @@ class API(object):
         :arg str typename:
         """
         return typename in self._schemas
-
 
     def dump_json(self, d):
         """
@@ -321,7 +320,6 @@ class API(object):
             return json.loads(s, object_hook=bson.json_util.object_hook)
         else:
             return json.loads(s)
-
 
     @property
     def uri(self):
@@ -367,7 +365,7 @@ class API(object):
         :raises ValueError:
             If the typename does not exist.
         """
-        if not typename in self._serializers:
+        if typename not in self._serializers:
             raise ValueError("Unknown typename '{}'".format(typename))
 
         if endpoint == "collection":
@@ -392,7 +390,8 @@ class API(object):
         :arg jsonapi.base.schema.Schema schema:
         """
         serializer_ = kargs.get("serializer") or serializer.Serializer(schema)
-        unserializer = kargs.get("unserializer") or serializer.Unserializer(schema)
+        unserializer = kargs.get("unserializer") \
+            or serializer.Unserializer(schema)
         resource_class = schema.resource_class
 
         self._typenames[schema.resource_class] = schema.typename
@@ -414,11 +413,11 @@ class API(object):
 
     def _find_handler(self, request):
         """
-        Parses the :attr:`request.uri` and returns the handler for the requested
-        endpoint.
+        Parses the :attr:`request.uri` and returns the handler for
+        the requested endpoint.
 
-        Arguments decoded in the uri (like the resource id or relationship name)
-        are saved in :attr:`request.japi_uri_arguments`.
+        Arguments decoded in the uri (like the resource id or
+        relationship name) are saved in :attr:`request.japi_uri_arguments`.
 
         :arg jsonapi.base.request.Request request:
         :rtype: jsonapi.base.handler.base_handler.BaseHandler:
