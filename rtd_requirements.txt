@@ -6,3 +6,4 @@ sqlalchemy
 tornado
 mongoengine
 motorengine
+py2neo
