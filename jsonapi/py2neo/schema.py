@@ -59,8 +59,8 @@ class Constructor(jsonapi.base.schema.Constructor):
         super.__init__(resource_class=resource_class)
 
     def create(self, **kwargs):
-        for k, v in kwargs:
-            print(k, v)
+        # for k, v in kwargs:
+        #     print(k, v)
         return None
 
 class Attribute(jsonapi.base.schema.Attribute):
@@ -116,32 +116,32 @@ class IDAttribute(jsonapi.base.schema.IDAttribute):
         raise AttributeError
 
 
-# class ToOneRelationship(jsonapi.base.schema.ToOneRelationship):
-#     """
-#     To one relationship here
-#     """
-#     pass
-#
-#
-# class ToManyRelationship(jsonapi.base.schema.ToManyRelationship):
-#     """
-#     Wraps an py2neo to-many relationship.
-#
-#     :arg str name:
-#         The name of the py2neo relationship
-#     :arg resource_class:
-#         The py2neo model
-#     :arg relobj:
-#         The relationship defined on the model
-#     """
-#
-#     def __init__(self, name, resource_class, relobj):
-#         super().__init__(name=name)
-#         self.resource_class = resource_class
-#         self.relobj = relobj
-#
-#     def get(self, resource):
-#         return self.relobj.__get__(resource, None)
+class ToOneRelationship(jsonapi.base.schema.ToOneRelationship):
+    """
+    To one relationship here
+    """
+    pass
+
+
+class ToManyRelationship(jsonapi.base.schema.ToManyRelationship):
+    """
+    Wraps an py2neo to-many relationship.
+
+    :arg str name:
+        The name of the py2neo relationship
+    :arg resource_class:
+        The py2neo model
+    :arg relobj:
+        The relationship defined on the model
+    """
+
+    def __init__(self, name, resource_class, relobj):
+        super().__init__(name=name)
+        self.resource_class = resource_class
+        self.relobj = relobj
+
+    def get(self, resource):
+        return self.relobj.__get__(resource, None)
 
 
 class Schema(jsonapi.base.schema.Schema):
@@ -177,22 +177,9 @@ class Schema(jsonapi.base.schema.Schema):
             if (isinstance(field, py2neo.ogm.Related) and
                not isinstance(field, py2neo.ogm.RelatedFrom)):
                 # to relationships
-
-                # *to-one*: MANYTOONE
-                # if sql_rel.direction == sqlalchemy.orm.interfaces.MANYTOONE:
-                #     rel = ToOneRelationship(self.resource_class, sql_rel)
-                #     self.relationships[rel.name] = rel
-                #     self.fields.add(rel.name)
-
-                # *to-many*: MANYTOMANY, ONETOMANY
-                # elif sql_rel.direction in (
-                #    sqlalchemy.orm.interfaces.MANYTOMANY,
-                #    sqlalchemy.orm.interfaces.ONETOMANY
-                #    ):
-                # rel = ToManyRelationship(name, self.resource_class, field)
-                # self.relationships[rel.name] = rel
-                # self.fields.add(rel.name)
-                continue
+                rel = ToManyRelationship(name, self.resource_class, field)
+                self.relationships[rel.name] = rel
+                self.fields.add(rel.name)
 
         # Use the primarykey of the resource_class, if no id marker is set.
         self.id_attribute = IDAttribute(name, self.resource_class, field)

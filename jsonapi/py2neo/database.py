@@ -205,7 +205,7 @@ class Session(jsonapi.base.database.Session):
         """
         Returns a dict, which maps each identifier in *identifiers* or None
         """
-        # print("Identifiers in get_many:", identifiers)
+        print("Identifiers in get_many:", identifiers)
         # resources = {
         #     identifier: self.get(identifier, required)
         #     for identifier in identifiers

@@ -71,3 +71,6 @@ target/
 # ignore the test/ directory for the moment, until the test cases are
 # structured better than now...
 /test/
+
+# Vim
+*.swp
